@@ -9,7 +9,7 @@ namespace HintMachine.Models
     internal static class Globals
     {
         public const string ProgramName = "HintMachine";
-        public const string ProgramVersion = "1.2.0";
+        public const string ProgramVersion = "1.3.0";
 
         /// <summary>
         /// The duration of a "tick" where the current game connector (if any) watches the game once, in milliseconds
@@ -74,7 +74,8 @@ namespace HintMachine.Models
             new PeggleDeluxeConnector(),
             new PeggleNightsConnector(),
             new AdvanceWarsDualStrikeConnector(),
-            new GuitarHeroIIIConnector()
+            new GuitarHeroIIIConnector(),
+            new BalatroConnector()
         };
 
         public static IGameConnector FindGameFromName(string name)

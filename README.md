@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/Version-1.2.0-blue)
+![version](https://img.shields.io/badge/Version-1.3.0-blue)
 <a href="https://discord.gg/Jcknj9w7Rm">
   <img src="https://img.shields.io/badge/-Discord-lightgrey?logo=discord" alt="Join Discord">
 </a>
@@ -44,6 +44,7 @@ You can check [this document](https://github.com/CalDrac/hintMachine/blob/dev/ad
 |----------------------------------|-----------|
 | 911 Operator                     | PC        |
 | Advance Wars: Dual Strike        | DS        |
+| Balatro                          | PC        |
 | BPM: Bullets Per Minute          | PC        |
 | Bust-a-Move 4                    | PS1       |
 | Columns                          | Megadrive |
@@ -83,3 +84,5 @@ You can check [this document](https://github.com/CalDrac/hintMachine/blob/dev/ad
 | Tony Hawk's Pro Skater 1 + 2     | PC        |
 | Xenotilt                         | PC        |
 | Zachtronics Solitaire Collection | PC        |
+
+> **Note:** Balatro requires the **BalatroHintMachine** mod for [Steamodded](https://github.com/Steamodded/smods) to be installed in `%AppData%/Roaming/Balatro/Mods`. Download it from the [BalatroHintMachine releases](https://github.com/HommeQuiParleAuxChevres/BalatroHintMachine/releases). The mod bridges the game state to HintMachine through `%AppData%/Roaming/Balatro/HintMachine/state.json`.

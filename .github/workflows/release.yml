@@ -1,0 +1,54 @@
+name: Release
+
+# Build HintMachine-<tag>.zip (HintMachine.exe + dependencies + ThreadstackFinder
+# 32/64) and attach it to a GitHub release on tags v*.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download nuget.exe
+        shell: pwsh
+        run: curl -sL -o nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+
+      - name: Restore NuGet packages
+        run: .\nuget.exe restore HintMachine.sln
+
+      - name: Build solution (Release, x64 then x86 to get ThreadstackFinder 32/64)
+        run: |
+          msbuild HintMachine.sln -p:Configuration=Release -p:Platform=x64 -v:m -nologo
+          msbuild HintMachine.sln -p:Configuration=Release -p:Platform=x86 -v:m -nologo
+
+      - name: Stage release zip
+        shell: pwsh
+        run: |
+          $staging = "dist"
+          New-Item -ItemType Directory -Force $staging | Out-Null
+          $bin = "HintMachine\bin\Release"
+          Copy-Item "$bin\HintMachine.exe", "$bin\HintMachine.exe.config", "$bin\Archipelago.MultiClient.Net.dll", "$bin\Newtonsoft.Json.dll" $staging
+          Copy-Item -Recurse -Force "$bin\Assets" "$staging\"
+          Get-ChildItem -Recurse -Path ThreadstackFinder\bin -Include ThreadstackFinder32.exe, ThreadstackFinder64.exe | ForEach-Object { Copy-Item $_.FullName $staging }
+          Compress-Archive -Path "$staging\*" -DestinationPath "HintMachine-$($env:GITHUB_REF_NAME).zip" -Force
+
+      - name: Verify zip structure
+        shell: pwsh
+        run: tar -tf HintMachine-*.zip
+
+      - name: Create GitHub release with the zip as asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: HintMachine-*.zip
+          generate_release_notes: true

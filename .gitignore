@@ -2,4 +2,5 @@ HintMachine/obj
 HintMachine/bin
 ThreadStackFinder/bin/
 .vs
-packages/
+packages
+tmp_balatro/

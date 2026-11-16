@@ -132,6 +132,7 @@
     <Compile Include="Models\ArchipelagoHintSession.cs" />
     <Compile Include="Models\Games\BPMConnector.cs" />
     <Compile Include="Models\Games\AdvanceWarsDualStrikeConnector.cs" />
+    <Compile Include="Models\Games\BalatroConnector.cs" />
     <Compile Include="Models\Games\GuitarHeroIIIConnector.cs" />
     <Compile Include="Models\Games\NubbysNumberFactoryConnector.cs" />
     <Compile Include="Models\Games\PaintTheTownRedConnector.cs" />
@@ -345,6 +346,7 @@
     <Resource Include="Assets\Covers\tmnt_shredders_revenge.png" />
     <Resource Include="Assets\Covers\katamari_damacy_reroll.png" />
     <Resource Include="Assets\Covers\nubbysnumberfactory.png" />
+    <Resource Include="Assets\Covers\balatro.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="WMPLib">
