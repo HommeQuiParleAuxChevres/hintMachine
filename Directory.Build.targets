@@ -1,0 +1,16 @@
+<Project>
+  <!-- Replace the WMPLib COM reference (needs Windows Media Player + tlbimp, absent
+       on Windows Server CI runners) with the PIA from the WMPLib NuGet package. -->
+  <ItemGroup>
+    <COMReference Remove="WMPLib" />
+    <Reference Include="Interop.WMPLib">
+      <HintPath>..\packages\WMPLib.1.0.0\lib\Interop.WMPLib.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+  <!-- When building with dotnet msbuild (no VS), import the WinFX targets so XAML
+       files generate their .g.cs; under VS msbuild this file does not exist and
+       the import is skipped (VS imports WinFX targets natively). -->
+  <Import Project="$(MSBuildSDKsPath)\Microsoft.NET.Sdk.WindowsDesktop\targets\Microsoft.WinFX.targets"
+          Condition="Exists('$(MSBuildSDKsPath)\Microsoft.NET.Sdk.WindowsDesktop\targets\Microsoft.WinFX.targets')" />
+</Project>

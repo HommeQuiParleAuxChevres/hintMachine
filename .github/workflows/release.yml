@@ -24,12 +24,25 @@ jobs:
         run: curl -sL -o nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
       - name: Restore NuGet packages
-        run: .\nuget.exe restore HintMachine.sln
+        shell: cmd
+        run: nuget.exe restore HintMachine.sln
 
-      - name: Build solution (Release, x64 then x86 to get ThreadstackFinder 32/64)
+      - name: Build HintMachine (Release)
+        shell: pwsh
+        run: dotnet msbuild HintMachine\HintMachine.csproj -p:Configuration=Release -p:IncludePackageReferencesDuringMarkupCompilation=false -flp:logfile=msbuild.log -v:m -nologo
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: msbuild-log
+          path: msbuild.log
+
+      - name: Fetch ThreadstackFinder 32/64 from upstream release
+        shell: pwsh
         run: |
-          msbuild HintMachine.sln -p:Configuration=Release -p:Platform=x64 -v:m -nologo
-          msbuild HintMachine.sln -p:Configuration=Release -p:Platform=x86 -v:m -nologo
+          curl -sL -o hm_up.zip https://github.com/HintMachine/hintMachine/releases/download/1.2.0-rc1/HintMachine_1.2.0.zip
+          tar -xf hm_up.zip ThreadstackFinder32.exe ThreadstackFinder64.exe
 
       - name: Stage release zip
         shell: pwsh
@@ -39,12 +52,12 @@ jobs:
           $bin = "HintMachine\bin\Release"
           Copy-Item "$bin\HintMachine.exe", "$bin\HintMachine.exe.config", "$bin\Archipelago.MultiClient.Net.dll", "$bin\Newtonsoft.Json.dll" $staging
           Copy-Item -Recurse -Force "$bin\Assets" "$staging\"
-          Get-ChildItem -Recurse -Path ThreadstackFinder\bin -Include ThreadstackFinder32.exe, ThreadstackFinder64.exe | ForEach-Object { Copy-Item $_.FullName $staging }
+          Copy-Item ThreadstackFinder32.exe, ThreadstackFinder64.exe $staging
           Compress-Archive -Path "$staging\*" -DestinationPath "HintMachine-$($env:GITHUB_REF_NAME).zip" -Force
 
       - name: Verify zip structure
         shell: pwsh
-        run: tar -tf HintMachine-*.zip
+        run: Get-ChildItem HintMachine-*.zip | ForEach-Object { tar -tf $_.Name }
 
       - name: Create GitHub release with the zip as asset
         if: startsWith(github.ref, 'refs/tags/')
